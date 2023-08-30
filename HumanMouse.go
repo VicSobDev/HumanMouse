@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-
 // Trajectory represents the starting position and behavior of a simulated mouse movement.
 type Trajectory struct {
 	StartX        float64 // Initial horizontal position
@@ -34,7 +33,7 @@ func (m *Trajectory) GenerateMouseMovements() (movements []Movements) {
 	)
 
 	if m.IsStartRandom {
-		for !m.isOutOfBounds(m.StartX, m.StartY) || m.StartY == 0 && m.StartX == 0  {
+		for !m.isOutOfBounds(m.StartX, m.StartY) || m.StartY == 0 && m.StartX == 0 {
 			m.StartX, m.StartY = getRandomX(), getRandomY()
 		}
 	}
