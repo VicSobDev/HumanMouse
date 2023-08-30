@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+
 // Trajectory represents the starting position and behavior of a simulated mouse movement.
 type Trajectory struct {
 	StartX        float64 // Initial horizontal position
@@ -33,13 +34,15 @@ func (m *Trajectory) GenerateMouseMovements() (movements []Movements) {
 	)
 
 	if m.IsStartRandom {
-		m.StartX, m.StartY = getRandomX(), getRandomY()
+		for !m.isOutOfBounds(m.StartX, m.StartY) || m.StartY == 0 && m.StartX == 0  {
+			m.StartX, m.StartY = getRandomX(), getRandomY()
+		}
 	}
 	x, y := m.StartX, m.StartY
 	startTime := time.Now().UnixMilli()
 
 	for m.isOutOfBounds(x, y) {
-		updateCoordinates(&x, &y, step, randiness)
+		m.updateCoordinates(&x, &y, step, randiness)
 		randomSleep()
 		movements = append(movements, Movements{X: x, Y: y, Duration: time.Now().UnixMilli() - startTime})
 	}
@@ -56,22 +59,22 @@ func (m *Trajectory) isOutOfBounds(x, y float64) bool {
 }
 
 // updateCoordinates modifies the coordinates based on predefined logic to simulate random mouse movement.
-func updateCoordinates(x, y *float64, step float64, randiness int) {
+func (m *Trajectory) updateCoordinates(x, y *float64, step float64, randiness int) {
 	n := rand.Intn(5)
-	m := rand.Intn(2)
+	k := rand.Intn(2)
 
 	switch {
-	case m == 0 && *y > 600:
+	case k == 0 && *y > m.Bounds.MaxY:
 		*y -= step * float64(rand.Intn(randiness))
-	case m == 0 && *y < 500:
+	case k == 0 && *y < m.Bounds.MinY:
 		*y += step * float64(rand.Intn(randiness))
-	case m == 0 && rand.Intn(2) == 0 && n == 0:
+	case k == 0 && rand.Intn(2) == 0 && n == 0:
 		*y += step * float64(rand.Intn(randiness))
-	case m == 0 && n == 0:
+	case k == 0 && n == 0:
 		*y -= step * float64(rand.Intn(randiness))
-	case *x > 1200:
+	case *x > m.Bounds.MaxX:
 		*x -= step * float64(rand.Intn(randiness))
-	case *x < 940:
+	case *x < m.Bounds.MinX:
 		*x += step * float64(rand.Intn(randiness))
 	case rand.Intn(2) == 0 && n == 0:
 		*x += step * float64(rand.Intn(randiness))
