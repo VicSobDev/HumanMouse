@@ -1,6 +1,6 @@
 # HumanMouse
 
-A Go package that simulates random human-like mouse movements, allowing for custom movement bounds.
+A Go package that simulates realistic, human-like mouse movements. Inspired by Brave browser's mouse position tracking, it's designed for replicating genuine user interactions on web pages and applications. 
 
 ## Installation
 
